@@ -1,0 +1,39 @@
+# Restaurant Management System
+User:
+   username
+   password
+   email
+   phone
+
+Category:
+   name
+
+Food:
+   name
+   description
+   price
+   Category(FK- Category) [One-to-Many]    
+
+Table:
+   number
+   capacity
+   is_available
+
+Order:
+   user_id(FK - User)   [one to many]
+   food_id  [many to many]
+   quantity
+   total_price
+   status - Pending, Proccesing, Completed
+   payment_status
+
+OrderItem   [intermediate table]
+   id
+   order_id
+   food_id
+
+# requirements.txt
+# .env : secret key add in this file
+# .gitignore add
+# github repo and push
+# download postgresql
