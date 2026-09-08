@@ -29,6 +29,15 @@ def categorydetail(request, pk):
          return Response({"message":"Can not be deleted. Category related to Food in OrderItem."})
       category.delete()
       return Response({"message":"Data deleted."})
-   # PUT request in category
+   elif request.method == 'PUT':       # requires all fields to be sent in the request body
+      serializer = CategorySerializer(category, data=request.data)
+      serializer.is_valid(raise_exception = True)
+      serializer.save()
+      return Response(serializer.data)
+   elif request.method == 'PATCH':     # requires only the fields to be sent in the request body that need to be updated
+      serializer = CategorySerializer(category, data=request.data, partial=True)
+      serializer.is_valid(raise_exception = True)
+      serializer.save()
+      return Response(serializer.data)
 
 # table function: GET, POST, RETRIEVE,PUT,DELETE
