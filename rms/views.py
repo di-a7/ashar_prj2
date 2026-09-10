@@ -7,6 +7,68 @@ from rest_framework import status
 # Create your views here.
 
 # Class Based API
+# GenericAPI and Mixin
+from rest_framework.generics import GenericAPIView, mixins
+class CategoryGenericAPIView(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+   queryset = Category.objects.all()
+   serializer_class = CategorySerializer
+   
+   def get(self,request):
+      return self.list(request)
+   
+   def post(self,reqeust):
+      return self.create(self.request)
+
+class CategoryDetailAPIView(GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+   queryset = Category.objects.all()
+   serializer_class = CategorySerializer
+   
+   def get(self,request, pk):
+      return self.retrieve(request, pk)
+   
+   def put(self, request, pk):
+      return self.update(request, pk)
+   
+   def patch(self, request, pk):
+      return self.partial_update(request, pk)
+      
+   def delete(self, request, pk):
+      category = Category.objects.get(pk=pk)
+      item = OrderItem.objects.filter(food__category = category).count()
+      if item > 0 :
+         return Response({"message":"Can not be deleted. Category related to Food in OrderItem."})
+      category.delete()
+      return Response({"message":"Data deleted."}, status=status.HTTP_204_NO_CONTENT)
+
+# GenericAPIView
+# class CategoryGenericAPIView(GenericAPIView):
+#    queryset = Category.objects.all()
+#    serializer_class = CategorySerializer
+   
+#    def get(self,request):
+#       category = self.get_queryset()
+#       serializer = self.get_serializer(category, many=True)
+#       return Response(serializer.data)
+   
+#    def post(self,request):
+#       pass
+
+# class CategoryDetail(GenericAPIView):
+#    queryset = Category.objects.all()
+#    serializer_class = CategorySerializer
+   
+#    def get(self, request, pk):
+#       category = self.get_object()
+#       serializer = self.get_serializer(category)
+#       return Response(serializer.data)
+
+
+
+
+
+
+
+
 # APIView
 from rest_framework.views import APIView
 
@@ -54,18 +116,18 @@ class CategoryDetailAPIView(APIView):
 
 
 # Functioin Based API
-# @api_view(['GET','POST'])
-# def category(request):
-#    if request.method == 'GET':
-#       category = Category.objects.all()
-#       serializer = CategorySerializer(category, many=True) # serializer: convert queryset into json format
-#       return Response(serializer.data)
+@api_view(['GET','POST'])
+def category(request):
+   if request.method == 'GET':
+      category = Category.objects.all()
+      serializer = CategorySerializer(category, many=True) # serializer: convert queryset into json format
+      return Response(serializer.data)
 
-#    elif request.method == 'POST':
-#       serializer = CategorySerializer(data=request.data)   # deserialization: convert json data into python data
-#       serializer.is_valid(raise_exception = True)
-#       serializer.save()
-#       return Response(serializer.data, status=status.HTTP_201_CREATED)
+   elif request.method == 'POST':
+      serializer = CategorySerializer(data=request.data)   # deserialization: convert json data into python data
+      serializer.is_valid(raise_exception = True)
+      serializer.save()
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 # @api_view(['GET','PUT','DELETE'])
 # def categorydetail(request, pk):
