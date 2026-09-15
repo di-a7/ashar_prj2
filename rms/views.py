@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Category, OrderItem
-from .serializers import CategorySerializer
+from .models import *
+from .serializers import *
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
+from .pagination import FoodPagination
 # Create your views here.
 
 # Class Based API
@@ -12,6 +14,7 @@ from rest_framework import viewsets
 class CategoryModelViewset(viewsets.ModelViewSet):
    queryset = Category.objects.all()
    serializer_class = CategorySerializer
+   pagination_class = PageNumberPagination
    
    def destroy(self,request,pk):
       category = Category.objects.get(pk=pk)
@@ -20,6 +23,14 @@ class CategoryModelViewset(viewsets.ModelViewSet):
          return Response({"message":"Can not be deleted. Category related to Food in OrderItem."})
       category.delete()
       return Response({"message":"Data deleted."}, status=status.HTTP_204_NO_CONTENT)
+
+
+class FoodModelViewset(viewsets.ModelViewSet):
+   queryset = Food.objects.select_related('category').all()
+   serializer_class = FoodSerializer
+   pagination_class = FoodPagination
+
+
 
 
 # Viewset

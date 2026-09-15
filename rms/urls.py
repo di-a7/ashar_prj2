@@ -1,9 +1,10 @@
 from django.urls import path
 # from .views import category, categorydetail
-from .views import CategoryModelViewset
+from .views import *
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
-router.register(r"category", CategoryModelViewset, basename="snippet")
+router.register(r"category", CategoryModelViewset, basename="category")
+router.register(r"food", FoodModelViewset, basename="food")
 
 urlpatterns = [
    # Viewset api
