@@ -6,6 +6,10 @@ from .serializers import *
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from .pagination import FoodPagination
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+
 # Create your views here.
 
 # Class Based API
@@ -15,6 +19,7 @@ class CategoryModelViewset(viewsets.ModelViewSet):
    queryset = Category.objects.all()
    serializer_class = CategorySerializer
    pagination_class = PageNumberPagination
+   permission_classes = [IsAuthenticated]
    
    def destroy(self,request,pk):
       category = Category.objects.get(pk=pk)
@@ -24,11 +29,17 @@ class CategoryModelViewset(viewsets.ModelViewSet):
       category.delete()
       return Response({"message":"Data deleted."}, status=status.HTTP_204_NO_CONTENT)
 
-
+from .filters import FoodFilter
 class FoodModelViewset(viewsets.ModelViewSet):
    queryset = Food.objects.select_related('category').all()
    serializer_class = FoodSerializer
    pagination_class = FoodPagination
+   filter_backends = [filters.SearchFilter,DjangoFilterBackend]
+   search_fields = ['name','category__name']
+   # filterset_fields = ['category']
+   filterset_class  = FoodFilter
+   permission_classes = [IsAuthenticatedOrReadOnly]
+   
 
 
 
