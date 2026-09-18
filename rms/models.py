@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from user.models import User
+from django.conf import settings
 # Create your models here.
 class Category(models.Model):
    name = models.CharField(max_length=50)
@@ -30,7 +32,7 @@ class Order(models.Model):
       ('IP','In Progress'),
       ('C','Completed')
    ]
-   user = models.ForeignKey(User, on_delete=models.CASCADE)
+   user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
    quantity = models.IntegerField()
    total_price = models.FloatField()
    status = models.CharField(max_length=2, choices=STATUS_CHOICE, default='P')
