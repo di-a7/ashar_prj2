@@ -39,10 +39,18 @@ class FoodModelViewset(viewsets.ModelViewSet):
    # filterset_fields = ['category']
    filterset_class  = FoodFilter
    permission_classes = [IsAuthenticatedOrReadOnly]
-   
+
+class OrderModelViewset(viewsets.ModelViewSet):
+   queryset = Order.objects.prefetch_related('items').all()
+   serializer_class = OrderSerializer
+   permission_classes = [IsAuthenticated]
 
 
 
+# items = {"food": 11,"food": 12,"food": 13}   }
+# '{
+#   "quantity": 1,
+# }'
 
 # Viewset
 # class CategoryViewset(viewsets.ViewSet):

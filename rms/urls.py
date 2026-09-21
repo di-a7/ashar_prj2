@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r"category", CategoryModelViewset, basename="category")
 router.register(r"food", FoodModelViewset, basename="food")
+router.register(r"order", OrderModelViewset, basename="order")
 
 urlpatterns = [
    # Viewset api
@@ -18,4 +19,4 @@ urlpatterns = [
    # function api
    # path('category/', category)
    # path('category/<pk>/', categorydetail)
-] + router.urls
+] + router.urls 

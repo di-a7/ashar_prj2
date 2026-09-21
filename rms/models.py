@@ -42,5 +42,5 @@ class Order(models.Model):
       return f"{self.user}- {self.status}"
 
 class OrderItem(models.Model):
-   order = models.ForeignKey(Order, on_delete=models.CASCADE)  
-   food = models.ForeignKey(Food, on_delete=models.PROTECT)
+   order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')  
+   food = models.ForeignKey(Food, on_delete=models.PROTECT, related_name='items')

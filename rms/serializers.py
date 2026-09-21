@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from rest_framework.response import Response
 
 class CategorySerializer(serializers.ModelSerializer):
    class Meta:
@@ -22,6 +23,53 @@ class FoodSerializer(serializers.ModelSerializer):
       return (obj.price * 0.12) + obj.price
    
    # create a method to calculate price with 10 percent discount, add field, method name should start with get_ followed by field name and include it in the fields
+
+class OrderItemSerializer(serializers.ModelSerializer):
+   class Meta:
+      model = OrderItem
+      fields = ['id','food']
+
+class OrderSerializer(serializers.ModelSerializer):
+   user = serializers.HiddenField(default = serializers.CurrentUserDefault())
+   total_price = serializers.FloatField(read_only=True)
+   status = serializers.CharField(read_only=True)
+   payment_status = serializers.BooleanField(read_only=True)
+   items = OrderItemSerializer(many=True)
+   class Meta:
+      model = Order
+      fields = ['id', 'user', 'quantity', 'total_price', 'status', 'payment_status','items']
+      
+   def create(self, validated_data):
+      items = validated_data.pop('items')
+      total_price = 0
+      for i in items:
+         food = Food.objects.get(pk = i.get('food').id)
+         # total_price += food.price * i.get('quantity')
+      order = Order.objects.create(user = validated_data.get('user'), quantity = validated_data.get('quantity'), total_price = total_price)
+      for i in items:
+         OrderItem.objects.create(order = order, food = i.get('food'))
+      # OrderItem.objects.bulk_create([OrderItem(order = order, food = i.get('food')) for i in items])
+      return order
+
+
+# remodel Ordeitem:
+# add quantity field in OrderItem and remove quantity from order
+
+# validated_data = {
+#    "quantity": 1,
+# }
+
+#    items =  {
+#       "food": 11,
+# "quantity": 2,
+#    },{
+#       "food": 12,
+# "quantity": 1
+#    }
+
+
+
+
 
 
 
