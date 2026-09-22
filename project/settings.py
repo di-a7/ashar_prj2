@@ -140,11 +140,23 @@ STATIC_URL = 'static/'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
+# MAILERS = {
+#     'default': {
+#         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+#     },
+# }
+
+# EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+# EMAIL_PORT = '2525'
+
+ANYMAIL = {
+    "MAILTRAP_API_TOKEN": os.getenv('MAILTRAP_API'),
+    "MAILTRAP_SANDBOX_ID": os.getenv('MAILTRAPMAILTRAP_SANDBOX_ID_API_TOKEN'),
 }
+EMAIL_BACKEND = "anymail.backends.mailtrap.EmailBackend"
+DEFAULT_FROM_EMAIL = "hello@demomailtrap.com"
 
 INTERNAL_IPS = [
     # ...
